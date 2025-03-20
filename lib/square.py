@@ -1,3 +1,5 @@
+#!/usr/bin/env python3.10
+# -*- coding: utf-8 -*-
 import pygame
 
 class Square:
@@ -15,6 +17,12 @@ class Square:
         self.x = x
         self.y = y
 
+    def resize(self, size):
+        self.width, self.height = size
+
+    def set_color(self, color):
+        self.color = color
+
 
 class Square_hollow(Square):
     def __init__(self, x, y, width, height, color, thickness):
@@ -26,3 +34,9 @@ class Square_hollow(Square):
 
     def move(self, x, y):
         super().move(x, y)
+
+    def resize(self, width, height):
+        super().resize(width, height)
+
+    def set_color(self, color):
+        super().set_color(color)
