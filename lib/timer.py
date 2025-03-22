@@ -6,19 +6,26 @@ import pygame
 class game_timer:
     def __init__(self):
         self.starttime = pygame.time.get_ticks()
-        self.endtime = 0
         self.__pausetime = 0
         self.__pausepoint = 0
+        self.__pauseflag = False
 
-    def end(self):
-        self.endtime = pygame.time.get_ticks()
-        return self.endtime - self.starttime - self.__pausetime
+    def get(self):
+        if self.is_pause():
+            endtime = self.__pausepoint
+        else:
+            endtime = pygame.time.get_ticks()
+        return endtime - self.starttime - self.__pausetime
 
     def pause(self):
-        if self.__pausepoint == 0:
+        if not self.is_pause():
             self.__pausepoint = pygame.time.get_ticks()
+            self.__pauseflag = True
 
     def resume(self):
-        if self.__pausepoint != 0:
+        if self.is_pause():
             self.__pausetime += pygame.time.get_ticks() - self.__pausepoint
-            self.__pausepoint = 0
+            self.__pauseflag = False
+
+    def is_pause(self):
+        return self.__pauseflag
