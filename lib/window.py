@@ -2,94 +2,110 @@
 # -*- coding utf-8 -*-
 
 import pygame
-import os
+from objects import Object
 
 class Window:
     def __init__(self,
                  size,
+                 fps = 30,
                  title = '',
                  flags = 0):
         pygame.init()
         self._window = pygame.display.set_mode(size, flags)
-        self._screens = [self._Screen()]
-        self._objects = pygame.sprite.Group()
-        self._flags = flags
-        self.title = title
+        pygame.display.set_caption(title)
 
-    def get_size(self):
-        return self._window.get_size()
+        # const vars
+        self.DEFAULT_BACKGROUND = pygame.Surface(size)
 
-    def _get_screen(self,
-                    screen_id):
-        return self._screens[screen_id]
+        # vars
+        self._fps = fps
+        self._clock = pygame.time.Clock()
+        self._screen = Window.Screen(self.DEFAULT_BACKGROUND)
 
-    def _get_screen_bg(self,
-                       screen_id):
-        return self._get_screen(screen_id).bg_on_show
+        # flags
+        self._running = True
+        self._mouse_hold = False
 
-    def set_screen_rect(self,
-                        screen_id,
-                        rect):
-        if rect is not None:
-            assert len(rect) == 4, 'ERROR: invalid rect'
-            rect = pygame.Rect(rect)
-        self._get_screen(screen_id).rect = rect
+    def set_fps(self, fps):
+        self._fps = fps
 
-    def add_screen(self,
-                   background_images = [],
-                   background_color = (0, 0, 0))-> int:
-        self._screens.append(self._Screen(background_color, background_images))
-        return len(self._screens) - 1
+    def set_screen(self, screen):
+        self._screen = screen
 
-    def add_screen_bg(self,
-                      screen_id,
-                      image)-> None:
-        return self._get_screen(screen_id).add_image(image)
+    def _mouse_button_down(self):
+        self._mouse_hold = True
 
-    def switch_screen_bg(self,
-                         screen_id,
-                         background_id):
-        assert 0 <= screen_id < len(self._screens), 'ERROR: invalid screen_id'
-        screen = self._get_screen(screen_id)
-        assert 0 <= background_id < len(screen.bgs), 'ERROR: invalid background_id'
-        screen.bg_on_show = background_id
+    def _mouse_button_up(self, pos):
+        if self._mouse_hold:
+            self._mouse_hold = False
+            self._screen.click_event(pos)
 
-    def resize(self,
-               size):
-        old_window = self._window
-        self._window = pygame.display.set_mode(size, self._flags)
-        self._window.blit(pygame.transform.scale(old_window, size), (0, 0))
-        del old_window
+    def running(self):
+        return self._running
 
-    def draw_screen(self,
-                    screen_id = 0):
-        screen = self._get_screen(screen_id)
-        if screen.rect == None:
-            rect = self._window.get_rect()
-        else:
-            rect = screen.rect
-        bg = pygame.transform.scale(screen.get_bg(), rect.size)
-        self._window.blit(bg, rect.topleft)
+    def event_handle(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self._running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                self._mouse_button_down()
+            elif event.type == pygame.MOUSEBUTTONUP:
+                self._mouse_button_up(event.pos)
+            elif event.type == pygame.KEYDOWN:
+                pass
+            elif event.type == pygame.KEYDOWN:
+                pass
 
     def update(self):
-        pygame.display.update()
+        if self._mouse_hold:
+            self._screen.mouse_hold_event()
+        else:
+            self._screen.mouse_release_event()
+        self._screen.draw(self._window)
+        self._clock.tick_busy_loop(self._fps)
+        pygame.display.flip()
+        if not self._running:
+            pygame.quit()
 
-    class _Screen:
-        def __init__(self,
-                     background_color = (0, 0, 0),
-                     background_images = []):
-            default_bg = pygame.Surface((1, 1))
-            default_bg.fill(background_color)
-            self.bgs = [default_bg]
-            self.bg_on_show = 0
-            self.rect = None
-            for image in background_images:
-                self.add_image(image)
+    # This class is for handling screen objects
+    class Screen:
+        def __init__(self, background):
+            self._bg = background
+            self._objects = []
+        
+        def add_object(self, obj):
+            self._objects.append(obj)
 
-        def add_image(self,
-                      image)-> None:
-            self.bgs.append(pygame.image.load(image).convert())
-            return len(self.bgs) - 1
+        def remove_object(self, obj):
+            self._objects.remove(obj)
 
-        def get_bg(self):
-            return self.bgs[self.bg_on_show]
+        def set_background(self, background):
+            self._bg = background
+
+        def draw(self, window):
+            bg = pygame.transform.scale(self._bg, window.get_size())
+            window.blit(bg, (0, 0))
+            for obj in self._objects:
+                obj.draw(window)
+
+        def mouse_release_event(self):
+            pos = pygame.mouse.get_pos()
+            for obj in self._objects:
+                if obj.rect.collidepoint(pos):
+                    obj.mouse_release_event()
+
+        def mouse_hold_event(self):
+            pos = pygame.mouse.get_pos()
+            for obj in self._objects:
+                if obj.rect.collidepoint(pos):
+                    obj.mouse_hold_event()
+
+        def click_event(self, pos):
+            for obj in self._objects:
+                if obj.rect.collidepoint(pos):
+                    event = obj.click_event()
+                    break
+
+        def update(self):
+            for obj in self._objects:
+                obj.update()

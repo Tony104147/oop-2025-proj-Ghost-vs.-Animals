@@ -27,5 +27,8 @@ class game_timer:
             self._pausetime += pygame.time.get_ticks() - self._pausepoint
             self._pauseflag = False
 
+    def reset(self):
+        self.__init__()
+
     def is_pause(self):
         return self._pauseflag
