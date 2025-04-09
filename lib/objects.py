@@ -10,10 +10,10 @@ class Object:
         self.rect = pygame.Rect(rect)
         self.texture = texture
 
-    def mouse_down_event(self, event):
+    def mouse_down_event(self, pos, button):
         pass
 
-    def mouse_up_event(self, event):
+    def mouse_up_event(self, pos, button):
         pass
 
     def mouse_motion_event(self, postions, button, which):
@@ -45,31 +45,33 @@ class Label(Object):
 
 class Button(Object):
     def __init__(self, rect, textures, callbacks, text = Text()):
-        super().__init__(rect, textures[0])
         assert len(textures) == 3, 'ERROR: textures must be 3'
         assert len(callbacks) == 5, 'EEROR: callbacks must be 3'
-        self.textures = textures
+        super().__init__(rect, textures)
+        self.texture_index = 0
         self.callbacks = callbacks
         self.text = text
 
-    def mouse_down_event(self, event):
-        self.texture = self.textures[2]
+    def mouse_down_event(self, pos, button):
+        if self.rect.collidepoint(pos):
+            self.texture_index = 2
 
-    def mouse_up_event(self, event):
-        self.texture = self.textures[1]
-        self.callbacks[event.button - 1]()
+    def mouse_up_event(self, pos, button):
+        if self.rect.collidepoint(pos):
+            self.texture_index = 1
+            self.callbacks[button - 1]()
 
     def mouse_motion_event(self, postions, buttons, which):
         if which[1]:
             if buttons[0] or buttons[1] or buttons[2]:
-                self.texture = self.textures[2]
+                self.texture_index = 2
             else:
-                self.texture = self.textures[1]
+                self.texture_index = 1
         else:
-            self.texture = self.textures[0]
+            self.texture_index = 0
 
     def draw(self, window):
-        window.blit(self.texture, self.rect.topleft)
+        window.blit(self.texture[self.texture_index], self.rect.topleft)
         window.blit(self.text.render(), self.rect.move(self.text.pos).topleft)
 
 class Box(Object):
@@ -80,17 +82,18 @@ class Box(Object):
     def add_object(self, obj):
         self.objects.append(obj)
 
-    def mouse_down_event(self, event):
-        pos = event.pos[0] - self.rect.x, event.pos[1] - self.rect.y
-        for obj in self.objects:
-            if obj.rect.collidepoint(pos):
-                obj.mouse_down_event(event)
+    def remove_object(self, obj):
+        self.objects.remove(obj)
 
-    def mouse_up_event(self, event):
-        pos = event.pos[0] - self.rect.x, event.pos[1] - self.rect.y
+    def mouse_down_event(self, pos, button):
+        box_pos = pos[0] - self.rect.x, pos[1] - self.rect.y
         for obj in self.objects:
-            if obj.rect.collidepoint(pos):
-                obj.mouse_up_event(event)
+            obj.mouse_down_event(box_pos, button)
+
+    def mouse_up_event(self, pos, button):
+        box_pos = pos[0] - self.rect.x, pos[1] - self.rect.y
+        for obj in self.objects:
+            obj.mouse_up_event(box_pos, button)
 
     def mouse_motion_event(self, postions, button, which):
         begin_pos = postions[0][0] - self.rect.x, postions[0][1] - self.rect.y
@@ -101,10 +104,12 @@ class Box(Object):
             event = obj.mouse_motion_event((begin_pos, end_pos), button, (begin, end))
 
     def key_down_event(self, key, mod):
-        pass
+        for obj in self.objects:
+            obj.key_down_event(key, mod)
 
     def key_up_event(self, key, mod):
-        pass
+        for obj in self.objects:
+            obj.key_up_event(key, mod)
 
     def draw(self, window):
         out = self.texture.copy()

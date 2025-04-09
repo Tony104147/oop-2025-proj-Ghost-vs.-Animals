@@ -7,23 +7,20 @@ from window import Window, Screen
 from objects import Object, Button, Label
 from text import Text
 
-class StartMenu(Screen):
+class StartMenu:
     screen = None
 
     button_textures = None
 
     def __init__(self, size):
-        img1 = pygame.image.load('src/forest.png').convert()
+        img1 = pygame.image.load('src/start_menu/forest.png').convert()
         bg = pygame.transform.scale(img1, size)
-        StartMenu.screen = Screen(bg)
+        StartMenu.screen = Screen(size, bg)
 
         # button textures
-        tex0 = pygame.image.load('src/button0.bmp').convert()
-        tex1 = pygame.image.load('src/button1.bmp').convert()
-        tex2 = pygame.image.load('src/button2.bmp').convert()
-        tex0.set_colorkey((0, 0, 0))
-        tex1.set_colorkey((0, 0, 0))
-        tex2.set_colorkey((0, 0, 0))
+        tex0 = pygame.image.load('src/button0.bmp').convert_alpha()
+        tex1 = pygame.image.load('src/button1.bmp').convert_alpha()
+        tex2 = pygame.image.load('src/button2.bmp').convert_alpha()
 
         StartMenu.button_textures = [tex0, tex1, tex2]
 
@@ -65,9 +62,8 @@ def Button_settings(callback, size):
     pos = (0, 0)
 
     # textures
-    tex = pygame.image.load('src/setting_icon.bmp').convert()
+    tex = pygame.image.load('src/setting_icon.bmp').convert_alpha()
     tex = pygame.transform.scale(tex, SIZE)
-    tex.set_colorkey((0, 0, 0))
 
     return Button((*pos, *SIZE),
                   [tex]*3,
