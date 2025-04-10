@@ -10,33 +10,23 @@ from text import Text
 class StartMenu:
     screen = None
 
-    button_textures = None
-
     def __init__(self, size):
         img1 = pygame.image.load('src/start_menu/forest.png').convert()
         bg = pygame.transform.scale(img1, size)
         StartMenu.screen = Screen(size, bg)
 
-        # button textures
-        tex0 = pygame.image.load('src/button0.bmp').convert_alpha()
-        tex1 = pygame.image.load('src/button1.bmp').convert_alpha()
-        tex2 = pygame.image.load('src/button2.bmp').convert_alpha()
-
-        StartMenu.button_textures = [tex0, tex1, tex2]
-
         # objects
-        self.button_settings = Button_settings(StartMenu.goto_setting_page, size)
-        self.button_start = Button_start(self.button_start_click, size)
-        self.button_load = Button_load(self.button_load_click, size)
-        self.button_guide = Button_guide(self.button_guide_click, size)
+        Buttons = get_Buttons(self)
+        self.button_settings = Buttons[0]
+        self.button_start = Buttons[1]
+        self.button_load = Buttons[2]
+        self.button_guide = Buttons[3]
 
         # load objects
         StartMenu.screen.add_object(self.button_settings)
         StartMenu.screen.add_object(self.button_start)
         StartMenu.screen.add_object(self.button_load)
         StartMenu.screen.add_object(self.button_guide)
-
-        # flags
 
         # vars
         self.size = size
@@ -57,71 +47,38 @@ class StartMenu:
     def button_guide_click(self):
         pass
 
-def Button_settings(callback, size):
-    SIZE = (50, 50)
-    pos = (0, 0)
-
+def get_Buttons(self):
     # textures
     tex = pygame.image.load('src/setting_icon.bmp').convert_alpha()
-    tex = pygame.transform.scale(tex, SIZE)
+    textures0 = [tex]*3
+    # button textures
+    tex0 = pygame.image.load('src/button0.bmp').convert_alpha()
+    tex1 = pygame.image.load('src/button1.bmp').convert_alpha()
+    tex2 = pygame.image.load('src/button2.bmp').convert_alpha()
+    textures1 = [tex0, tex1, tex2]
 
-    return Button((*pos, *SIZE),
-                  [tex]*3,
-                  [callback] + [Object.do_nothing]*4)
+    buttons_set = [
+    #  | text   | pos       | size      | textures | text_size | callback 
+    #   -----------------------------------------------------------------------
+        (''     , (0  , 0  ), (50 , 50 ), textures0, 0         , StartMenu.goto_setting_page),
+        ('Start', (160, 260), (480, 80 ), textures1, 60        , self.button_start_click),
+        ('Load' , (160, 350), (230, 60 ), textures1, 40        , self.button_load_click),
+        ('Guide', (410, 350), (230, 60 ), textures1, 40        , self.button_guide_click)
+    ]
 
-def Button_start(callback, size):
-    SIZE = (480, 80)
-    pos = round((size[0] - SIZE[0]) / 2), round(size[1] / 2 - SIZE[1] / 2)
+    buttons = []
+    for text, pos, size, textures, text_size, callback in buttons_set:
+        # text
+        text = Text(text, text_size, (0, 0, 0))
+        text.typeset(size, Text.CENTER)
 
-    # textures
-    tex0, tex1, tex2 = StartMenu.button_textures
-    tex0 = pygame.transform.scale(tex0, SIZE)
-    tex1 = pygame.transform.scale(tex1, SIZE)
-    tex2 = pygame.transform.scale(tex2, SIZE)
+        # textures
+        tex0, tex1, tex2 = textures
+        tex0 = pygame.transform.scale(tex0, size)
+        tex1 = pygame.transform.scale(tex1, size)
+        tex2 = pygame.transform.scale(tex2, size)
 
-    # text
-    text = Text('Start', 60, (0, 0, 0))
-    text.typeset(SIZE, Text.CENTER)
+        buttons.append(Button((*pos, *size), [tex0, tex1, tex2],
+                              [callback] + [Object.do_nothing]*4, text))
 
-    return Button((*pos, *SIZE),
-                  [tex0, tex1, tex2],
-                  [callback] + [Object.do_nothing]*4,
-                  text)
-
-def Button_load(callback, size):
-    SIZE = (230, 60)
-    pos = round(size[0] / 2 - SIZE[0] - 10), round(size[1] / 2 + 60)
-
-    # textures
-    tex0, tex1, tex2 = StartMenu.button_textures
-    tex0 = pygame.transform.scale(tex0, SIZE)
-    tex1 = pygame.transform.scale(tex1, SIZE)
-    tex2 = pygame.transform.scale(tex2, SIZE)
-
-    # text
-    text = Text('Load', 40, (0, 0, 0))
-    text.typeset(SIZE, Text.CENTER)
-
-    return Button((*pos, *SIZE),
-                  [tex0, tex1, tex2],
-                  [callback] + [Object.do_nothing]*4,
-                  text)
-
-def Button_guide(callback, size):
-    SIZE = (230, 60)
-    pos = round(size[0] / 2 + 10), round(size[1] / 2 + 60)
-
-    # textures
-    tex0, tex1, tex2 = StartMenu.button_textures
-    tex0 = pygame.transform.scale(tex0, SIZE)
-    tex1 = pygame.transform.scale(tex1, SIZE)
-    tex2 = pygame.transform.scale(tex2, SIZE)
-
-    # text
-    text = Text('Guide', 40, (0, 0, 0))
-    text.typeset(SIZE, Text.CENTER)
-
-    return Button((*pos, *SIZE),
-                  [tex0, tex1, tex2],
-                  [callback] + [Object.do_nothing]*4,
-                  text)
+    return buttons

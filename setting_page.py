@@ -9,10 +9,8 @@ from text import Text
 class SettingPage:
     screen = None
 
-    textures_button1 = None
-    textures_button2 = None
-    textures_button2_bar = None
-    textures_label = None
+    textures_button = None
+    textures_button_bar = None
     textures_page = None
 
     current_page = None
@@ -21,24 +19,6 @@ class SettingPage:
     def __init__(self, size):
         SettingPage.screen = Screen(size, pygame.Surface(size), self.init)
 
-        # button textures
-        tex0 = pygame.image.load('src/button0.bmp').convert_alpha()
-        tex1 = pygame.image.load('src/button1.bmp').convert_alpha()
-        tex2 = pygame.image.load('src/button2.bmp').convert_alpha()
-        SettingPage.textures_button1 = [tex0, tex1, tex2]
-
-        tex0 = pygame.image.load('src/setting_page/button0.bmp').convert()
-        tex1 = pygame.image.load('src/setting_page/button1.bmp').convert()
-        SettingPage.textures_button2 = [tex0, tex1, tex1]
-
-        tex0 = pygame.image.load('src/setting_page/button0_bar.bmp').convert()
-        tex1 = pygame.image.load('src/setting_page/button1_bar.bmp').convert()
-        SettingPage.textures_button2_bar = [tex0, tex1, tex1]
-
-        # label texture
-        tex0 = pygame.image.load('src/setting_page/Label0.bmp').convert()
-        tex1 = pygame.Surface((0, 0)).convert()
-        SettingPage.textures_label = [tex0, tex1]
 
         # setting page texture
         bg = pygame.Surface(size).convert_alpha()
@@ -48,26 +28,39 @@ class SettingPage:
         bg.blit(bg_mask, (60, 60))
         SettingPage.textures_page = bg
 
+        tex0 = pygame.image.load('src/setting_page/button0.bmp').convert()
+        tex1 = pygame.image.load('src/setting_page/button1.bmp').convert()
+        SettingPage.textures_button = [tex0, tex1, tex0]
+        tex0 = pygame.image.load('src/setting_page/button0_bar.bmp').convert()
+        tex1 = pygame.image.load('src/setting_page/button1_bar.bmp').convert()
+        SettingPage.textures_button_bar = [tex0, tex1, tex0]
+
         # objects
-        self.button_back = get_Button_back()
-        self.button_quit = get_Button1('Quit game', (80, 495), (190, 35), Window.quit)
+        Labels = get_Label()
+        self.label_volume = Labels[0]
+        self.label_volume_val = Labels[1]
+        self.label_fps = Labels[2]
+        self.label_fps_val = Labels[3]
+
+        Buttons = get_Buttons(self)
+        self.button_back = Buttons[0]
+        self.button_quit = Buttons[1]
+        self.button_volume_add = Buttons[2]
+        self.button_volume_sub = Buttons[3]
+        self.button_fps_add = Buttons[4]
+        self.button_fps_sub = Buttons[5]
+        self.button_general = Buttons[6]
+        self.button_keyboard = Buttons[7]
+        self.button_view = Buttons[8]
 
         # general page
         self.page_general = get_Box((290, 70), (440, 460), (170, 170, 170))
         # general page - volume
-        self.label_volume = get_Label1('Volume', (0, 0))
-        self.label_volume_val = get_Label2('100', (200, 0))
-        self.button_volume_add = get_Button1('+', (400, 4), (36, 36), self.volume_add)
-        self.button_volume_sub = get_Button1('-', (164, 4), (36, 36), self.volume_sub)
         self.page_general.add_object(self.label_volume)
         self.page_general.add_object(self.label_volume_val)
         self.page_general.add_object(self.button_volume_add)
         self.page_general.add_object(self.button_volume_sub)
         # general page - fps
-        self.label_fps = get_Label1('Fps', (0, 44))
-        self.label_fps_val = get_Label2('60', (200, 44))
-        self.button_fps_add = get_Button1('+', (400, 48), (36, 36), self.fps_add)
-        self.button_fps_sub = get_Button1('-', (164, 48), (36, 36), self.fps_sub)
         self.page_general.add_object(self.label_fps)
         self.page_general.add_object(self.label_fps_val)
         self.page_general.add_object(self.button_fps_add)
@@ -81,9 +74,6 @@ class SettingPage:
 
         # select box
         self.box_page_select = get_Box((70, 70), (210, 154), (150, 150, 150))
-        self.button_general = get_Button2('General', (0, 2), self.show_general_page)
-        self.button_keyboard = get_Button2('Keyboard', (0, 52), self.show_keyboard_page)
-        self.button_view = get_Button2('View', (0, 102), self.show_view_page)
         self.box_page_select.add_object(self.button_general)
         self.box_page_select.add_object(self.button_keyboard)
         self.box_page_select.add_object(self.button_view)
@@ -109,8 +99,8 @@ class SettingPage:
     def show_setting_page(self, page, button):
         SettingPage.screen.remove_object(SettingPage.current_page)
         SettingPage.screen.add_object(page)
-        SettingPage.current_button.texture = SettingPage.textures_button2
-        button.texture = SettingPage.textures_button2_bar
+        SettingPage.current_button.texture = SettingPage.textures_button
+        button.texture = SettingPage.textures_button_bar
         SettingPage.current_button = button
         SettingPage.current_page = page
 
@@ -145,64 +135,77 @@ class SettingPage:
             self.label_volume_val.text.text = str(Window.volume)
             self.label_volume_val.text.typeset((200, 44), Text.CENTER)
 
-def get_Label1(text, pos):
-    size = (440, 44)
+def get_Label():
+    text_size = 28
 
-    # text
-    text = Text(text, 28, (0, 0, 0))
-    text.typeset((160, size[1]), Text.CENTER)
+    # textures
+    tex0 = pygame.image.load('src/setting_page/Label0.bmp').convert()
+    tex1 = pygame.Surface((0, 0)).convert()
 
-    return Label((*pos, *size),
-                  SettingPage.textures_label[0],
-                  text)
+    labels_set = [
+    #  | text    | pos      | size     | texture
+    #   ------------------------------------------
+        ('Volume', (0  , 0) , (160, 44), tex0),
+        ('100'   , (200, 0) , (200, 44), tex1),
+        ('Fps'   , (0  , 44), (160, 44), tex0),
+        ('60'    , (200, 44), (200, 44), tex1)
+        ]
 
-def get_Label2(text, pos):
-    size = (200, 44)
+    labels = []
+    for text, pos, size, texture in labels_set:
+        # text
+        text = Text(text, text_size, (0, 0, 0))
+        text.typeset(size, Text.CENTER)
 
-    # text
-    text = Text(text, 28, (0, 0, 0))
-    text.typeset(size, Text.CENTER)
+        labels.append(Label((*pos, *size), texture, text))
 
-    return Label((*pos, *size),
-                  SettingPage.textures_label[1],
-                  text)
+    return labels
 
-def get_Button(text, rect, textures, callback):
-    pos = rect[:2]
-    size = rect[2:]
-
-    # text
-    text = Text(*text, (0, 0, 0))
-    text.typeset(size, Text.CENTER)
-
-    #textures
-    tex0, tex1, tex2 = textures
-    tex0 = pygame.transform.scale(tex0, size)
-    tex1 = pygame.transform.scale(tex1, size)
-    tex2 = pygame.transform.scale(tex2, size)
-
-    return Button(rect,
-                  [tex0, tex1, tex2],
-                  [callback] + [Object.do_nothing]*4,
-                  text)
-
-def get_Button_back():
-    size = (50, 50)
-    pos = (0, 0)
+def get_Buttons(self):
+    text_size = 28
 
     # textures
     tex = pygame.image.load('src/setting_icon.bmp').convert_alpha()
-    tex = pygame.transform.scale(tex, size)
+    tex = pygame.transform.scale(tex, (50, 50))
+    textures0 = [tex]*3
+    tex0 = pygame.image.load('src/button0.bmp').convert_alpha()
+    tex1 = pygame.image.load('src/button1.bmp').convert_alpha()
+    tex2 = pygame.image.load('src/button2.bmp').convert_alpha()
+    tex0 = pygame.transform.scale(tex0, (190, 35))
+    tex1 = pygame.transform.scale(tex1, (190, 35))
+    tex2 = pygame.transform.scale(tex2, (190, 35))
+    textures1 = [tex0, tex1, tex2]
+    tex0 = pygame.transform.scale(tex0, (36, 36))
+    tex1 = pygame.transform.scale(tex1, (36, 36))
+    tex2 = pygame.transform.scale(tex2, (36, 36))
+    textures2 = [tex0, tex1, tex2]
+    textures3 = SettingPage.textures_button
+    textures3_bar = SettingPage.textures_button_bar
 
-    return get_Button(('', 0), (*pos, *size), [tex]*3, Window.back_screen)
+    buttons_set = [
+    #  | text       | pos       | size      | textures | text_size | callback 
+    #   -----------------------------------------------------------------------
+        (''         , (0  , 0  ), (50 , 50 ), textures0, 0         , Window.back_screen),
+        ('Quit Game', (80 , 495), (190, 35 ), textures1, text_size , Window.quit),
+        ('+'        , (400, 4  ), (36 , 36 ), textures2, text_size , self.volume_add),
+        ('-'        , (164, 4  ), (36 , 36 ), textures2, text_size , self.volume_sub),
+        ('+'        , (400, 48 ), (36 , 36 ), textures2, text_size , self.fps_add),
+        ('-'        , (164, 48 ), (36 , 36 ), textures2, text_size , self.fps_sub),
+        ('Genaral'  , (0  , 2  ), (210, 50 ), textures3, text_size , self.show_general_page),
+        ('Keyboard' , (0  , 52 ), (210, 50 ), textures3, text_size , self.show_keyboard_page),
+        ('View'     , (0  , 102), (210, 50 ), textures3, text_size , self.show_view_page)
+    ]
 
-def get_Button1(text, pos, size, callback):
-    return get_Button((text, 28), (*pos, *size), SettingPage.textures_button1, callback)
+    buttons = []
+    for text, pos, size, textures, text_size, callback in buttons_set:
+        # text
+        text = Text(text, text_size, (0, 0, 0))
+        text.typeset(size, Text.CENTER)
 
-def get_Button2(text, pos, callback):
-    size = (210, 50)
+        buttons.append(Button((*pos, *size), textures,
+                              [callback] + [Object.do_nothing]*4, text))
 
-    return get_Button((text, 30), (*pos, *size), SettingPage.textures_button2, callback)
+    return buttons
 
 def get_Box(pos, size, color):
     texture = pygame.Surface(size).convert()
