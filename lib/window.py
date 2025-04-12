@@ -86,6 +86,7 @@ class Window:
 
     def update(self):
         Window._clock.tick_busy_loop(Window.fps)
+        Window._screen.update()
         Window._screen.draw(Window.window)
         pygame.display.flip()
         if not Window.running:

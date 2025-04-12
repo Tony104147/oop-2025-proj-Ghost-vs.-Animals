@@ -19,16 +19,10 @@ class Object:
     def mouse_motion_event(self, postions, button, which):
         pass
 
-    def key_down_event(self, key, mod):
-        pass
-
-    def key_up_event(self, key, mod):
-        pass
-
     def draw(self, window):
         pass
 
-    def move(self, pos):
+    def move(self, dx, dy):
         pass
 
     def update(self):
@@ -103,19 +97,50 @@ class Box(Object):
             end = obj.rect.collidepoint(end_pos)
             event = obj.mouse_motion_event((begin_pos, end_pos), button, (begin, end))
 
-    def key_down_event(self, key, mod):
-        for obj in self.objects:
-            obj.key_down_event(key, mod)
-
-    def key_up_event(self, key, mod):
-        for obj in self.objects:
-            obj.key_up_event(key, mod)
-
     def draw(self, window):
         out = self.texture.copy()
         for obj in self.objects:
             obj.draw(out)
         window.blit(out, self.rect.topleft)
+
+    def update(self):
+        for obj in self.objects:
+            obj.update()
+
+class Entity(Object):
+    def __init__(self, rect, texture, hit_box):
+        super().__init__(rect, texture)
+        self.hit_box = pygame.Rect(hit_box)
+        self.hit_box_rect = pygame.Rect(hit_box)
+        self.update_hit_box()
+        self.tags = 0
+
+    def update_hit_box(self):
+        self.hit_box_rect.x = self.rect.x + self.hit_box.x
+        self.hit_box_rect.y = self.rect.y + self.hit_box.y
+
+    def collide(self, entity):
+        # self.update_hit_box()
+        # entity.update_hit_box()
+        return self.hit_box_rect.colliderect(entity.hit_box_rect)
+
+    def collidelist(self, entities):
+        for entity in entities:
+            if self.collide(entity):
+                return True
+        return False
+    
+    def draw(self, window):
+        window.blit(self.texture, self.rect.topleft)
+    
+    def move(self, dx, dy):
+        self.rect.move_ip(dx, dy)
+        self.update_hit_box()
+
+
+
+
+
 
 
 
