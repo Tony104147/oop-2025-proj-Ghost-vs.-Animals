@@ -17,10 +17,10 @@ class StartMenu:
 
         # objects
         Buttons = get_Buttons(self)
-        self.button_settings = Buttons[0]
-        self.button_start = Buttons[1]
-        self.button_load = Buttons[2]
-        self.button_guide = Buttons[3]
+        self.button_settings = Buttons.pop(0)
+        self.button_start = Buttons.pop(0)
+        self.button_load = Buttons.pop(0)
+        self.button_guide = Buttons.pop(0)
 
         # load objects
         StartMenu.screen.add_object(self.button_settings)
@@ -39,6 +39,7 @@ class StartMenu:
         Window.set_screen('setting_page')
 
     def button_start_click(self):
+        Window.set_screen('start_village')
         pass
 
     def button_load_click(self):

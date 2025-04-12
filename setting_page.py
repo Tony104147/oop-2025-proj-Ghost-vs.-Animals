@@ -37,21 +37,21 @@ class SettingPage:
 
         # objects
         Labels = get_Label()
-        self.label_volume = Labels[0]
-        self.label_volume_val = Labels[1]
-        self.label_fps = Labels[2]
-        self.label_fps_val = Labels[3]
+        self.label_volume = Labels.pop(0)
+        self.label_volume_val = Labels.pop(0)
+        self.label_fps = Labels.pop(0)
+        self.label_fps_val = Labels.pop(0)
 
         Buttons = get_Buttons(self)
-        self.button_back = Buttons[0]
-        self.button_quit = Buttons[1]
-        self.button_volume_add = Buttons[2]
-        self.button_volume_sub = Buttons[3]
-        self.button_fps_add = Buttons[4]
-        self.button_fps_sub = Buttons[5]
-        self.button_general = Buttons[6]
-        self.button_keyboard = Buttons[7]
-        self.button_view = Buttons[8]
+        self.button_back = Buttons.pop(0)
+        self.button_quit = Buttons.pop(0)
+        self.button_volume_add = Buttons.pop(0)
+        self.button_volume_sub = Buttons.pop(0)
+        self.button_fps_add = Buttons.pop(0)
+        self.button_fps_sub = Buttons.pop(0)
+        self.button_general = Buttons.pop(0)
+        self.button_keyboard = Buttons.pop(0)
+        self.button_view = Buttons.pop(0)
 
         # general page
         self.page_general = get_Box((290, 70), (440, 460), (170, 170, 170))
@@ -180,9 +180,8 @@ def get_Buttons(self):
     tex2 = pygame.transform.scale(tex2, (36, 36))
     textures2 = [tex0, tex1, tex2]
     textures3 = SettingPage.textures_button
-    textures3_bar = SettingPage.textures_button_bar
 
-    buttons_set = [
+    button_sets = [
     #  | text       | pos       | size      | textures | text_size | callback 
     #   -----------------------------------------------------------------------
         (''         , (0  , 0  ), (50 , 50 ), textures0, 0         , Window.back_screen),
@@ -197,7 +196,7 @@ def get_Buttons(self):
     ]
 
     buttons = []
-    for text, pos, size, textures, text_size, callback in buttons_set:
+    for text, pos, size, textures, text_size, callback in button_sets:
         # text
         text = Text(text, text_size, (0, 0, 0))
         text.typeset(size, Text.CENTER)
