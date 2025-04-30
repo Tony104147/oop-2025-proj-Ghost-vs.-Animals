@@ -24,31 +24,31 @@ class PygameEvent(Enum):
     KEYDOWN     = pygame.KEYDOWN
     KEYUP       = pygame.KEYUP
 
-class Reactions:
-    ''''''
-    def __init__(self):
-        self.events: dict[Enum, set] = dict()
+# class Reactions:
+#     ''''''
+#     def __init__(self):
+#         self.events: dict[Enum, set] = dict()
 
-    ''''''
-    def add(self, event: Event, action):
-        if event.key not in self.events.keys():
-            self.events[event.key] = set()
-        self.events[event.key].add(action)
+#     ''''''
+#     def add(self, event: Event, action):
+#         if event["type"] not in self.events.keys():
+#             self.events[event["type"]] = set()
+#         self.events[event["type"]].add(action)
 
-    ''''''
-    def remove(self, event: Event, action):
-        if event.key in self.events.keys():
-            self.events[event.key].remove(action)
-            # To ignore situation that action not in set, use the following:
-            #
-            # self.events[event.key].discard(action)
+#     ''''''
+#     def remove(self, event: Event, action):
+#         if event["type"] in self.events.keys():
+#             self.events[event["type"]].remove(action)
+#             # To ignore situation that action not in set, use the following:
+#             #
+#             # self.events[event["type"]].discard(action)
 
-    ''''''
-    def clear(self, event: Event):
-        if event.key in self.events.keys():
-            self.events[event.key].clear()
+#     ''''''
+#     def clear(self, event: Event):
+#         if event["type"] in self.events.keys():
+#             self.events[event["type"]].clear()
 
-    ''''''
-    def react(self, event: Event, **kwargs):
-        for action in self.events.get(event.key, []):
-            action(**kwargs)
+#     ''''''
+#     def react(self, event: Event, **kwargs):
+#         for action in self.events.get(event["type"], []):
+#             action(**kwargs)

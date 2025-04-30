@@ -1,6 +1,7 @@
 # -*- coding utf-8 -*-
 
 from collections import namedtuple
+from abc import ABC, abstractmethod
 from enum import Enum, auto
 
 import pygame
@@ -9,7 +10,7 @@ from lib import generate_id
 from object import Object
 from lib.event import Event
 
-class Character(Object):
+class ABCCharacter(ABC, Object):
     def __init__(self, *,
                  rect = (0, 0, 0, 0),
                  image: pygame.surface = None,
@@ -29,13 +30,12 @@ class Character(Object):
         self.ATK = ATK
         self.DEF = DEF
         self.speed = speed
-
-    def draw(self, surface: pygame.Surface):
-        super().draw(surface)
     
+    @abstractmethod
     def update(self, groups: dict[str, pygame.sprite.Group], events: list[Event]):
         for event in events:
-            key, args = event["type"], event["kwargs"]
+            id, key, args = event["ID"], event["type"], event["kwargs"]
+            if id == self.ID: continue
 
             if key == CharacterEvent.ATTACKED:
                 self.attacked(args)
@@ -60,8 +60,9 @@ class Character(Object):
             if pygame.sprite.spritecollideany(self, groups["BLOCK"]):
                 self.rect.move_ip(-dx, -dy)
                 break
-    
-    Setter = namedtuple("character", ["Name", "MAX_HP", "HP", "ATK", "DEF", "speed"])
+
+# Character setter
+Setter = namedtuple("character", ["Name", "MAX_HP", "HP", "ATK", "DEF", "speed"])
 
 class CharacterEvent(Enum):
     '''

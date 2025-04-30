@@ -25,7 +25,6 @@ class Object(ABC, pygame.sprite.Sprite):
             self.image.fill((0, 0, 0, 0))
 
     ''''''
-    @abstractmethod
     def draw(self, surface: pygame.Surface):
         if self.image:
             # # Reacle the image with unchanged ratio
@@ -43,5 +42,6 @@ class Object(ABC, pygame.sprite.Sprite):
             surface.blit(image, self.rect.topleft)
 
     ''''''
+    @abstractmethod
     def update(self, groups: dict[str, pygame.sprite.Group], events: list[Event]):
         pass

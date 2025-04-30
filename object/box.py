@@ -3,6 +3,7 @@
 import pygame
 
 from object import Object
+from lib.event import Event
 
 class Box(Object):
     ''''''
@@ -39,6 +40,6 @@ class Box(Object):
         self.image = original_image
 
     ''''''
-    def update(self):
+    def update(self, groups: dict[str, pygame.sprite.Group], events: list[Event]):
         for obj in self.objects:
-            obj.update()
+            obj.update(groups, events)
