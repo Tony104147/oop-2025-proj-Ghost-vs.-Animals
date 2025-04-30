@@ -1,14 +1,11 @@
 # -*- coding utf-8 -*-
 
 from enum import Enum, unique
+from collections import namedtuple
 
 import pygame
 
-class Event(Enum):
-    '''
-    Enumerate event classes
-    '''
-    pass
+Event = namedtuple("Event", ["Object_ID", "type", "kwargs"])
 
 @unique
 class PygameEvent(Enum):
@@ -30,28 +27,28 @@ class PygameEvent(Enum):
 class Reactions:
     ''''''
     def __init__(self):
-        self.events: dict[Event, set] = dict()
+        self.events: dict[Enum, set] = dict()
 
     ''''''
-    def add(self, event_id: Event, action):
-        if event_id not in self.events.keys():
-            self.events[event_id] = set()
-        self.events[event_id].add(action)
+    def add(self, event: Event, action):
+        if event.key not in self.events.keys():
+            self.events[event.key] = set()
+        self.events[event.key].add(action)
 
     ''''''
-    def remove(self, event_id: Event, action):
-        if event_id in self.events.keys():
-            self.events[event_id].remove(action)
+    def remove(self, event: Event, action):
+        if event.key in self.events.keys():
+            self.events[event.key].remove(action)
             # To ignore situation that action not in set, use the following:
             #
-            # self.events[event_id].discard(action)
+            # self.events[event.key].discard(action)
 
     ''''''
-    def clear(self, event_id: Event):
-        if event_id in self.events.keys():
-            self.events[event_id].clear()
+    def clear(self, event: Event):
+        if event.key in self.events.keys():
+            self.events[event.key].clear()
 
     ''''''
-    def react(self, event_id: Event, **kwargs):
-        for action in self.events.get(event_id, []):
+    def react(self, event: Event, **kwargs):
+        for action in self.events.get(event.key, []):
             action(**kwargs)
