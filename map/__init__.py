@@ -3,8 +3,9 @@
 import pygame
 
 from object.box import Box
+from lib.event import Event, react
+
 from object.character import main_character
-from lib.event import Event
 
 class Map(Box):
     def __init__(self, rect, image):
@@ -16,8 +17,9 @@ class Map(Box):
         key_pressed = pygame.key.get_pressed()
 
         # main character
-        for key, event in self.main_character.KEY_EVENT_LIST:
+        for key, event in self.main_character.KEY_MOVE_EVENT_LIST:
             if key_pressed[key]:
+                react(event)
                 events.append(event)
 
         super().update(groups, events)

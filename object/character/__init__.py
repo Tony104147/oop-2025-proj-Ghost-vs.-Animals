@@ -33,17 +33,8 @@ class ABCCharacter(ABC, Object):
     
     @abstractmethod
     def update(self, groups: dict[str, pygame.sprite.Group], events: list[Event]):
-        for event in events:
-            id, key, args = event["ID"], event["type"], event["kwargs"]
-            if id == self.ID: continue
+        pass
 
-            if key == CharacterEvent.ATTACKED:
-                self.attacked(args)
-            elif key == CharacterEvent.HEAL:
-                self.heal(args)
-            elif key == CharacterEvent.MOVE:
-                self.move(args, groups)
-    
     def attacked(self, value):
         self.HP -= value * (1 - self.DEF / (100 + self.DEF))
         self.HP = max(self.HP, 0)
@@ -52,14 +43,14 @@ class ABCCharacter(ABC, Object):
         self.HP += value
         self.HP = min(self.HP, self.MAX_HP)
     
-    def move(self, movement, groups: dict[str, pygame.sprite.Group]):
+    def move(self, movement, groups: dict[str, pygame.sprite.Group], block = True):
         dx, dy = movement
         # Move and then stop moving whenever being bocked
         for _ in range(self.speed):
+            if block and pygame.sprite.spritecollideany(self, groups["BLOCK"]):
+                continue
+
             self.rect.move_ip(dx, dy)
-            if pygame.sprite.spritecollideany(self, groups["BLOCK"]):
-                self.rect.move_ip(-dx, -dy)
-                break
 
 # Character setter
 Setter = namedtuple("character", ["Name", "MAX_HP", "HP", "ATK", "DEF", "speed"])

@@ -21,16 +21,16 @@ class Character(ABCCharacter):
     def __init__(self):
         super().__init__(main_character_setter)
 
-        event_move_up    = Event(Object_ID= self.ID, type= CharacterEvent.MOVE, kwargs= {"movement" : (0, -1)})
-        event_move_down  = Event(Object_ID= self.ID, type= CharacterEvent.MOVE, kwargs= {"movement" : (0, 1)})
-        event_move_left  = Event(Object_ID= self.ID, type= CharacterEvent.MOVE, kwargs= {"movement" : (-1, 0)})
-        event_move_right = Event(Object_ID= self.ID, type= CharacterEvent.MOVE, kwargs= {"movement" : (1, 0)})
+        event_move_up    = Event(ID= self.ID, type= CharacterEvent.MOVE, func= self.move, kwargs= {"movement" : (0, -1)})
+        event_move_down  = Event(ID= self.ID, type= CharacterEvent.MOVE, func= self.move, kwargs= {"movement" : (0, 1)})
+        event_move_left  = Event(ID= self.ID, type= CharacterEvent.MOVE, func= self.move, kwargs= {"movement" : (-1, 0)})
+        event_move_right = Event(ID= self.ID, type= CharacterEvent.MOVE, func= self.move, kwargs= {"movement" : (1, 0)})
 
-        self.KEY_EVENT_LIST = {
-            pygame.K_w : {event_move_up},
-            pygame.K_a : {event_move_left},
-            pygame.K_s : {event_move_down},
-            pygame.K_d : {event_move_right}
+        self.KEY_MOVE_EVENT_LIST = {
+            pygame.K_w : event_move_up,
+            pygame.K_a : event_move_left,
+            pygame.K_s : event_move_down,
+            pygame.K_d : event_move_right,
         }
 
     ''''''

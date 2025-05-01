@@ -5,7 +5,7 @@ from collections import namedtuple
 
 import pygame
 
-Event = namedtuple("Event", ["Object_ID", "type", "kwargs"])
+Event = namedtuple("Event", ["ID", "type", "func", "kwargs"])
 
 @unique
 class PygameEvent(Enum):
@@ -23,6 +23,9 @@ class PygameEvent(Enum):
     MOUSEUP     = pygame.MOUSEBUTTONUP
     KEYDOWN     = pygame.KEYDOWN
     KEYUP       = pygame.KEYUP
+
+def react(event: Event):
+    return event["func"](event["kwargs"])
 
 # class Reactions:
 #     ''''''
