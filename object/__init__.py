@@ -1,12 +1,10 @@
 # -*- coding utf-8 -*-
 
-from abc import ABC, abstractmethod
-
 import pygame
 
 from lib.event import Event
 
-class Object(ABC, pygame.sprite.Sprite):
+class Object(pygame.sprite.Sprite):
     ''''''
     def __init__(self, *,
                  rect = (0, 0, 0, 0),
@@ -23,6 +21,10 @@ class Object(ABC, pygame.sprite.Sprite):
         else:
             self.image = pygame.Surface(self.rect.size).convert_alpha()
             self.image.fill((0, 0, 0, 0))
+
+        # unique object ID
+        self.ID = generate_id()
+        print(f"Object_{self.ID}: Created")
 
     ''''''
     def draw(self, surface: pygame.Surface):
@@ -42,6 +44,10 @@ class Object(ABC, pygame.sprite.Sprite):
             surface.blit(image, self.rect.topleft)
 
     ''''''
-    @abstractmethod
-    def update(self, groups: dict[str, pygame.sprite.Group], events: list[Event]):
+    def update(self, groups: dict[str, pygame.sprite.Group]):
         pass
+
+def generate_id():
+    generate_id.counter += 1
+    return generate_id.counter
+setattr(generate_id, 'counter', 0)

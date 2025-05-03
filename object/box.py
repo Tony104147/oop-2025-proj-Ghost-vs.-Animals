@@ -12,6 +12,7 @@ class Box(Object):
                  image: pygame.Surface = None):
         # Call the parent class (Object) constructor
         super().__init__(rect=rect, image=image)
+        self.image = pygame.transform.scale(self.image, self.rect.size)
 
         # Objects in this box
         self.objects = pygame.sprite.Group()
@@ -40,6 +41,6 @@ class Box(Object):
         self.image = original_image
 
     ''''''
-    def update(self, groups: dict[str, pygame.sprite.Group], events: list[Event]):
+    def update(self, groups: dict[str, pygame.sprite.Group]):
         for obj in self.objects:
-            obj.update(groups, events)
+            obj.update(groups)

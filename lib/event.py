@@ -25,7 +25,7 @@ class PygameEvent(Enum):
     KEYUP       = pygame.KEYUP
 
 def react(event: Event):
-    return event["func"](event["kwargs"])
+    return event.func(event.kwargs)
 
 # class Reactions:
 #     ''''''
