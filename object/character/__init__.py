@@ -1,6 +1,5 @@
 # -*- coding utf-8 -*-
 
-from abc import ABCMeta, abstractmethod
 from collections import namedtuple
 from enum import Enum, auto
 
@@ -31,7 +30,7 @@ class Character_base(Object):
         self.speed = speed
 
     # @abstractmethod
-    def update(self, groups: dict[str, pygame.sprite.Group]):
+    def update(self, informations: dict[str]):
         pass
 
     def attacked(self, value):
@@ -42,8 +41,8 @@ class Character_base(Object):
         self.HP += value
         self.HP = min(self.HP, self.MAX_HP)
     
-    def move(self, movement: tuple[int | float], blocks_group: pygame.sprite.Group, block = True):
-        dx, dy = movement
+    def move(self, offset: tuple[int | float], blocks_group: pygame.sprite.Group, block = True):
+        dx, dy = offset
         dx *= self.speed
         dy *= self.speed
 

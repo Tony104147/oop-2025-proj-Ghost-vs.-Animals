@@ -41,6 +41,6 @@ class Box(Object):
         self.image = original_image
 
     ''''''
-    def update(self, groups: dict[str, pygame.sprite.Group]):
+    def update(self, informations: dict):
         for obj in self.objects:
-            obj.update(groups)
+            obj.update(informations)

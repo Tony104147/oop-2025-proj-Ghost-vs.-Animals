@@ -25,11 +25,11 @@ class Map_base(Box):
         self.enemies = pygame.sprite.Group()
         self.blocks = pygame.sprite.Group()
     
-    def update(self, groups: dict[str, pygame.sprite.Group]):
-        return super().update(groups)
+    def update(self, informations: dict[str]):
+        return super().update(informations)
 
 
-def get_maps(WINDOW_SIZE) -> dict[str, Map_base]:
+def get_maps(WINDOW_SIZE, main_character) -> dict[str, Map_base]:
     MAPS = dict()
     maps = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../maps")
     for file in os.listdir(maps):
@@ -44,5 +44,6 @@ def get_maps(WINDOW_SIZE) -> dict[str, Map_base]:
 
         name = module_name.replace("_", " ")
         MAPS[name] = map_module(WINDOW_SIZE)
+        MAPS[name].add(main_character)
     
     return MAPS

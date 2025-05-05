@@ -44,7 +44,7 @@ class Object(pygame.sprite.Sprite):
             surface.blit(image, self.rect.topleft)
 
     ''''''
-    def update(self, groups: dict[str, pygame.sprite.Group]):
+    def update(self, informations: dict[str]):
         pass
 
 def generate_id():

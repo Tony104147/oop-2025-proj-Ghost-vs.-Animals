@@ -23,8 +23,14 @@ class Game:
         self.window = pygame.display.set_mode(self.WINDOW_SIZE)
         pygame.display.set_caption(self.title)
 
-        self.maps = get_maps(self.WINDOW_SIZE)
+        # Main character
+        self.main_character = main_character.Character()
+
+        # Load maps and set initial map
+        self.maps = get_maps(self.WINDOW_SIZE, self.main_character)
         self.current_map = self.maps[current_map]
+
+        # Skill objects group
         self.skill_objects = pygame.sprite.Group()
 
         # A function called when quit game
@@ -32,9 +38,6 @@ class Game:
 
         # Keep running game if true
         self.run = True
-
-        # Main character
-        self.main_character = main_character.Character()
 
 
     def start(self):
@@ -58,14 +61,10 @@ class Game:
                 #         x, y = self.main_character.rect.size
                 #         self.main_character.rect.inflate_ip(50 - x, 50 - y)
 
-            key_pressed = pygame.key.get_pressed()
-            # Main character moving from keyboard
-            for key, movement in self.main_character.MOVING_DIRECTION.items():
-                if key_pressed[key]:
-                    self.main_character.move(movement, self.current_map.blocks, self.current_map.rect)
+            # Update objects
+            self.current_map.update(self.get_informations())
 
             # Draw objects
-            self.current_map.objects.add(self.main_character)
             self.current_map.draw(self.window)
 
             # Refresh screen
@@ -80,10 +79,16 @@ class Game:
         # Quit the game and close the window
         pygame.quit()
     
-    def get_groups(self):
+    def get_informations(self):
         groups = {
-            "BLOCKS"        : self.current_map.blocks,
-            "ENEMIES"       : self.current_map.enemies,
-            "SKILL OBJECTS" : self.skill_objects,
+            "BLOCKS"       : self.current_map.blocks,
+            "ENEMIES"      : self.current_map.enemies,
+            "SKILLOBJECTS" : self.skill_objects,
         }
-        return groups
+
+        informations = {
+            "MAINCHARACTER" : self.main_character,
+            "CURRENTMAP"    : self.current_map,
+            "GROUPS"        : groups,
+        }
+        return informations

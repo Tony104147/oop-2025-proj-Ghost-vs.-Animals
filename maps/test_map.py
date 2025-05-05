@@ -6,7 +6,6 @@ from maps import Map_base
 from images import GETIMAGE
 
 
-
 class Map(Map_base):
     ''''''
     def __init__(self, window_size):
