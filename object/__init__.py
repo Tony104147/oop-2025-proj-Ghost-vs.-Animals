@@ -2,8 +2,6 @@
 
 import pygame
 
-from lib.event import Event
-
 class Object(pygame.sprite.Sprite):
     ''''''
     def __init__(self, *,

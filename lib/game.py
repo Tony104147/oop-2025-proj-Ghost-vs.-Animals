@@ -1,12 +1,9 @@
 # -*- coding utf-8 -*-
 
-import os
-import importlib
-
 import pygame
 
+from lib import counter
 from maps import get_maps
-from lib.event import Event, react
 from object.character import main_character
 
 class Game:
@@ -24,7 +21,7 @@ class Game:
         pygame.display.set_caption(self.title)
 
         # Main character
-        self.main_character = main_character.Character()
+        self.main_character = main_character.Main_character()
 
         # Load maps and set initial map
         self.maps = get_maps(self.WINDOW_SIZE, self.main_character)
@@ -69,6 +66,9 @@ class Game:
 
             # Refresh screen
             pygame.display.flip()
+
+            # Update all counters
+            counter.tick()
 
             # Maintain fps
             clock.tick_busy_loop(self.fps)

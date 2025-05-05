@@ -2,12 +2,12 @@
 
 import pygame
 
+from lib.counter import Counter
 from object import Object
-from object.character import Character_base, CharacterEvent
-from lib.event import Event
+from object.character import Character
 from images import GETIMAGE
 
-class Character(Character_base):
+class Main_character(Character):
     ''''''
     def __init__(self):
         super().__init__(rect=(100, 100, 50, 50),
@@ -25,8 +25,11 @@ class Character(Character_base):
             pygame.K_s : (0, 1),
             pygame.K_d : (1, 0),
         }
+
+        self.attacked_clock = Counter(120)
+        self.heal_clock = Counter(240)
     
-    def update(self, informations: dict[str, Object | pygame.sprite.Group]):
+    def update(self, informations: dict[str, Object | dict[str, pygame.sprite.Group]]):
         key_pressed = pygame.key.get_pressed()
 
         # Main character moving from keyboard
@@ -34,11 +37,20 @@ class Character(Character_base):
             if key_pressed[key]:
                 self.move(direction, informations["GROUPS"]["BLOCKS"])
         
-        # Clamp main character into screen
-        restriction = informations["CURRENTMAP"].rect
-        assert restriction.width >= self.rect.width and restriction.height >= self.rect.height
-        self.rect.clamp_ip(restriction)
-
-
-
-
+        if self.attacked_clock.ok(False):
+            enemy_collide = pygame.sprite.spritecollideany(self, informations["GROUPS"]["ENEMIES"])
+            if enemy_collide:
+                self.attacked(enemy_collide.ATK)
+                print(f"HP: {int(self.HP)}")
+                self.attacked_clock.reset()
+        
+        if self.HP == 0:
+            self.HP = self.MAX_HP
+            print("Dead!!!")
+        
+        if self.heal_clock.ok():
+            self.heal(5)
+            print(f"HP: {int(self.HP)}")
+        
+        # Call parent class update
+        super().update(informations)

@@ -8,7 +8,7 @@ import pygame
 from object import Object
 from lib.event import Event
 
-class Character_base(Object):
+class Character(Object):
     ''''''
     def __init__(self, *,
                  rect = (0, 0, 0, 0),
@@ -18,7 +18,7 @@ class Character_base(Object):
                  HP = 100.0,
                  ATK = 10.0,
                  DEF = 10.0,
-                 speed = 5):
+                 speed = 3):
         super().__init__(rect=rect, image=image)
 
         # Character datas
@@ -30,8 +30,11 @@ class Character_base(Object):
         self.speed = speed
 
     # @abstractmethod
-    def update(self, informations: dict[str]):
-        pass
+    def update(self, informations: dict[str, Object | dict[str, pygame.sprite.Group]]):
+        # Clamp main character into screen
+        restriction = informations["CURRENTMAP"].rect
+        assert restriction.width >= self.rect.width and restriction.height >= self.rect.height
+        self.rect.clamp_ip(restriction)
 
     def attacked(self, value):
         self.HP -= value * (1 - self.DEF / (100 + self.DEF))
@@ -54,9 +57,9 @@ class Character_base(Object):
             self.rect.move_ip(-dx, -dy)
 
 
-class CharacterEvent(Enum):
-    '''
-    '''
-    ATTACKED = auto()
-    HEAL = auto()
-    MOVE = auto()
+# class CharacterEvent(Enum):
+#     '''
+#     '''
+#     ATTACKED = auto()
+#     HEAL = auto()
+#     MOVE = auto()

@@ -7,7 +7,6 @@ import importlib
 import pygame
 
 from object.box import Box
-from lib.event import Event, react
 
 class Map_base(Box):
     ''''''
