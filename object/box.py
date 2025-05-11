@@ -11,7 +11,6 @@ class Box(Object):
                  image: pygame.Surface = None):
         # Call the parent class (Object) constructor
         super().__init__(rect=rect, image=image)
-        self.image = pygame.transform.scale(self.image, self.rect.size)
 
         # Objects in this box
         self.objects = pygame.sprite.Group()
@@ -26,6 +25,7 @@ class Box(Object):
 
     ''''''
     def draw(self, surface: pygame.Surface):
+        self.image = pygame.transform.scale(self.image, self.rect.size)
         # Copy the original image of this box
         original_image = self.image.copy()
 

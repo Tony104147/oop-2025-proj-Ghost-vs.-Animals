@@ -6,7 +6,7 @@ import pygame
 
 from maps import Map_base
 from images import GETIMAGE
-from object.character import bat
+from object.character import bat, frog
 
 
 class Map(Map_base):
@@ -21,9 +21,11 @@ class Map(Map_base):
 
         self.bat1 = bat.Bat(randpos(*window_size))
         self.bat2 = bat.Bat(randpos(*window_size))
+        self.frog = frog.Frog(randpos(*window_size))
 
         self.enemies.add(self.bat1)
         self.enemies.add(self.bat2)
+        self.enemies.add(self.frog)
 
         for groups in [self.enemies, self.blocks]:
             for obj in groups:

@@ -17,7 +17,7 @@ class Main_character(Character):
                          HP=100.0,
                          ATK=10.0,
                          DEF=10.0,
-                         speed=5)
+                         speed=2)
 
         self.MOVING_DIRECTION = {
             pygame.K_w : (0, -1),
@@ -26,31 +26,40 @@ class Main_character(Character):
             pygame.K_d : (1, 0),
         }
 
-        self.attacked_clock = Counter(120)
-        self.heal_clock = Counter(240)
+        self.attack_clock = Counter(240)
+        self.heal_clock = Counter(480)
     
     def update(self, informations: dict[str, Object | dict[str, pygame.sprite.Group]]):
-        key_pressed = pygame.key.get_pressed()
 
-        # Main character moving from keyboard
+        # Moving from keyboard
+        key_pressed = pygame.key.get_pressed()
         for key, direction in self.MOVING_DIRECTION.items():
             if key_pressed[key]:
-                self.move(direction, informations["GROUPS"]["BLOCKS"])
+                offset = pygame.math.Vector2(direction)
+                offset.scale_to_length(self["speed"])
+                self.move(offset[:], informations["GROUPS"]["BLOCKS"])
         
-        if self.attacked_clock.ok(False):
-            enemy_collide = pygame.sprite.spritecollideany(self, informations["GROUPS"]["ENEMIES"])
-            if enemy_collide:
-                self.attacked(enemy_collide.ATK)
-                print(f"HP: {int(self.HP)}")
-                self.attacked_clock.reset()
+        # Attack
+        if self.attack_clock.ok(False):
+            enemies_collide = pygame.sprite.spritecollide(self, informations["GROUPS"]["ENEMIES"], False)
+            for enemy in enemies_collide:
+                enemy.attacked(self["ATK"])
+                print(f"{enemy['Name']} attacked by main character | HP: {int(self['HP'])}")
+                self.attack_clock.reset()
         
-        if self.HP == 0:
-            self.HP = self.MAX_HP
+        # Dead
+        if self["HP"] == 0:
+            self["HP"] = self["MAX_HP"]
             print("Dead!!!")
         
+        # Heal
         if self.heal_clock.ok():
             self.heal(5)
-            print(f"HP: {int(self.HP)}")
+            print(f"HP: {int(self['HP'])}")
         
         # Call parent class update
         super().update(informations)
+    
+    def attacked(self, value):
+        self.heal_clock.reset()
+        return super().attacked(value)

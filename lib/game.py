@@ -8,7 +8,7 @@ from object.character import main_character
 
 class Game:
     def __init__(self, *,
-                 fps = 120,
+                 fps = 240,
                  window_size = (800, 600),
                  title = '',
                  current_map = "",
