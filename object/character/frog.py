@@ -13,14 +13,14 @@ from images import GETIMAGE
 class Frog(Character):
     ''''''
     def __init__(self, pos: tuple[int]):
-        super().__init__(rect=(*pos, 50, 50),
+        super().__init__(rect=(*pos, 100, 100),
                          image=GETIMAGE("frog"),
                          Name="frog",
                          MAX_HP=150.0,
                          HP=150.0,
                          ATK=30.0,
                          DEF=20.0,
-                         speed=3)
+                         speed=5)
 
         self.attack_clock = Counter(240)
         self.jump_clock = Counter(360)
@@ -28,11 +28,13 @@ class Frog(Character):
         self.destination = (0, 0)
         
     def update(self, informations: dict[str, Object | dict[str, pygame.sprite.Group]]):
-
         # Move
-        if self.jump_clock.ok():
+        if self.jump_clock.ok(False):
             self.destination = informations["MAINCHARACTER"].rect.center
             self["ATK"] = 0.0
+            if self.anger_clock.ok(False):
+                self.jump_clock.reset()
+                self['speed'] = 10
         
         if (self.rect.centerx != self.destination[0]) or (self.rect.centery != self.destination[1]):
             dx = self.destination[0] - self.rect.centerx
@@ -40,7 +42,7 @@ class Frog(Character):
             offset = pygame.math.Vector2((dx, dy))
             if offset.length() > self['speed']:
                 offset.scale_to_length(self["speed"])
-            self.move(offset[:])
+            super().move(offset, informations["GROUPS"]["BLOCKS"])
             self.jump_clock.reset()
         else:
             self["ATK"] = 30.0
@@ -50,6 +52,17 @@ class Frog(Character):
             informations["MAINCHARACTER"].attacked(self["ATK"])
             print(f"main charcter attacked by {self['Name']} | HP: {int(informations['MAINCHARACTER']['HP'])}")
             self.attack_clock.reset()
+        
+        # Dead
+        if self["HP"] == 0:
+            self["HP"] = self["MAX_HP"]
+            print("frog dead!!!")
+            self.kill()
 
         # Call parent class update
         super().update(informations)
+    
+    def attacked(self, value):
+        self.anger_clock.reset()
+        self['speed'] = 6
+        super().attacked(value)

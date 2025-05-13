@@ -12,36 +12,25 @@ class Character(Object):
     def __init__(self, *,
                  rect = (0, 0, 0, 0),
                  image: pygame.Surface = None,
-                 Name = "npc",
+                 Name = "character",
                  MAX_HP = 100.0,
                  HP = 100.0,
                  ATK = 10.0,
                  DEF = 10.0,
-                 speed = 3):
+                 speed = 3,
+                 restriction = None):
         super().__init__(rect=rect, image=image)
 
         # Character datas
-        self.values = {
-            "Name"   : Name,
-            "MAX_HP" : MAX_HP,
-            "HP"     : HP,
-            "ATK"    : ATK,
-            "DEF"    : DEF,
-            "speed"  : speed,
-        }
-    
-    def __getitem__(self, key):
-        return self.values[key]
+        self.Name = Name
+        self.MAX_HP = MAX_HP
+        self.HP = HP
+        self.ATK = ATK
+        self.DEF = DEF
+        self.speed = speed
 
-    def __setitem__(self, key, value):
-        self.values[key] = value
-
-    # @abstractmethod
-    def update(self, informations: dict[str, Object | dict[str, pygame.sprite.Group]]):
-        # Clamp main character into screen
-        restriction = informations["CURRENTMAP"].rect
-        assert restriction.width >= self.rect.width and restriction.height >= self.rect.height
-        self.rect.clamp_ip(restriction)
+        # Restriction rectangle
+        self.restriction = restriction
 
     def attacked(self, value):
         self["HP"] = max(self["HP"] - value * (1 - self["DEF"] / (100 + self["DEF"])), 0)
@@ -49,21 +38,20 @@ class Character(Object):
     def heal(self, value):
         self["HP"] = min(self["HP"] + value, self["MAX_HP"])
     
-    def move(self, offset: tuple[int | float], blocks_group: pygame.sprite.Group = None):
-        dx, dy = offset
-
+    def move(self,
+             offset: tuple[int | float],
+             blocks_group: pygame.sprite.Group = None):
         # Move
         original_pos = self.rect.topleft
+        dx, dy = offset
         self.rect.move_ip(dx, dy)
+
+        # Clamp character into restriction
+        if self.restriction:
+            self.rect.clamp_ip(self.restriction)
 
         # Back to the original position if being blocked
         if blocks_group and pygame.sprite.spritecollideany(self, blocks_group):
             self.rect.topleft = original_pos
-
-
-# class CharacterEvent(Enum):
-#     '''
-#     '''
-#     ATTACKED = auto()
-#     HEAL = auto()
-#     MOVE = auto()
+            return False
+        return True

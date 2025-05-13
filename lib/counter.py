@@ -27,7 +27,8 @@ class Counter:
         '''
         self.is_pause = not self.is_pause
     
-    def reset(self):
+    def reset(self, count_time = 0):
+        if count_time: self.count_time = count_time
         self.countdown = self.count_time
     
 def tick():

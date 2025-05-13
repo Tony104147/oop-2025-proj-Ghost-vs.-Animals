@@ -22,12 +22,18 @@ class Object(pygame.sprite.Sprite):
 
         # unique object ID
         self.ID = generate_id()
-        print(f"Object_{self.ID}: Created")
+        # print(f"Object_{self.ID}: Created")
+    
+    def __getitem__(self, name):
+        return getattr(self, name)
+
+    def __setitem__(self, name, value):
+        setattr(self, name, value)
 
     ''''''
     def draw(self, surface: pygame.Surface):
         if self.image:
-            # # Reacle the image with unchanged ratio
+            # # Rescale the image with unchanged ratio
             # self_ratio = self.rect.height / self.rect.width
             # image_ratio = self.image.get_height() / self.image.get_width()
             # if self_ratio > image_ratio:
@@ -42,7 +48,7 @@ class Object(pygame.sprite.Sprite):
             surface.blit(image, self.rect.topleft)
 
     ''''''
-    def update(self, informations: dict[str]):
+    def update(self, informations):
         pass
 
 def generate_id():

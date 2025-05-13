@@ -13,38 +13,42 @@ from images import GETIMAGE
 class Bat(Character):
     ''''''
     def __init__(self, pos: tuple[int]):
-        super().__init__(rect=(*pos, 36, 36),
+        super().__init__(rect=(*pos, 72, 72),
                          image=GETIMAGE("bat"),
                          Name="bat",
                          MAX_HP=100.0,
                          HP=100.0,
                          ATK=10.0,
                          DEF=10.0,
-                         speed=2)
+                         speed=4)
         
         self.attack_clock = Counter(240)
-        self.move_count = 0
+        self.move_clock = Counter(30)
         self.offset = (0, 0)
         
     def update(self, informations: dict[str, Object | dict[str, pygame.sprite.Group]]):
-
         # Move
-        if self.move_count == 0:
-            radius = 150
-            x, y = informations["MAINCHARACTER"].rect.topleft
-            x = random.uniform(x - radius, x + radius) - self.rect.x
-            y = random.uniform(y - radius, y + radius) - self.rect.y
-            self.offset = pygame.math.Vector2(np.sign(x), np.sign(y))
+        if self.move_clock.ok():
+            radius = 200
+            x, y = informations["MAINCHARACTER"].rect.center
+            x = random.uniform(x - radius, x + radius) - self.rect.centerx
+            y = random.uniform(y - radius, y + radius) - self.rect.centery
+            self.offset = pygame.math.Vector2(x, y)
             self.offset.scale_to_length(self["speed"])
-            self.move_count = random.randint(10, 30)
-        self.move_count -= 1
-        self.move(self.offset, informations["GROUPS"]["BLOCKS"])
+            self.move_clock.reset(random.randint(10, 30))
+        super().move(self.offset, informations["GROUPS"]["BLOCKS"])
 
         # attack
         if self.attack_clock.ok(False) and pygame.sprite.collide_rect(self, informations["MAINCHARACTER"]):
             informations["MAINCHARACTER"].attacked(self["ATK"])
             print(f"main charcter attacked by {self['Name']} | HP: {int(informations['MAINCHARACTER']['HP'])}")
             self.attack_clock.reset()
+        
+        # Dead
+        if self["HP"] == 0:
+            self["HP"] = self["MAX_HP"]
+            print("bat dead!!!")
+            self.kill()
 
         # Call parent class update
         super().update(informations)

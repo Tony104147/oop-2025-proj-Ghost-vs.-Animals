@@ -10,14 +10,14 @@ from images import GETIMAGE
 class Main_character(Character):
     ''''''
     def __init__(self):
-        super().__init__(rect=(100, 100, 50, 50),
+        super().__init__(rect=(100, 100, 80, 80),
                          image=GETIMAGE("ghost"),
                          Name="main character",
                          MAX_HP=100.0,
                          HP=100.0,
                          ATK=10.0,
                          DEF=10.0,
-                         speed=2)
+                         speed=5)
 
         self.MOVING_DIRECTION = {
             pygame.K_w : (0, -1),
@@ -30,14 +30,13 @@ class Main_character(Character):
         self.heal_clock = Counter(480)
     
     def update(self, informations: dict[str, Object | dict[str, pygame.sprite.Group]]):
-
-        # Moving from keyboard
+        # Move
         key_pressed = pygame.key.get_pressed()
         for key, direction in self.MOVING_DIRECTION.items():
             if key_pressed[key]:
                 offset = pygame.math.Vector2(direction)
                 offset.scale_to_length(self["speed"])
-                self.move(offset[:], informations["GROUPS"]["BLOCKS"])
+                super().move(offset, informations["GROUPS"]["BLOCKS"])
         
         # Attack
         if self.attack_clock.ok(False):
@@ -50,12 +49,12 @@ class Main_character(Character):
         # Dead
         if self["HP"] == 0:
             self["HP"] = self["MAX_HP"]
-            print("Dead!!!")
+            print("main charcter dead!!!")
         
-        # Heal
-        if self.heal_clock.ok():
-            self.heal(5)
-            print(f"HP: {int(self['HP'])}")
+        # # Heal
+        # if self.heal_clock.ok():
+        #     self.heal(5)
+        #     print(f"main character heals 5 HP | HP: {int(self['HP'])}")
         
         # Call parent class update
         super().update(informations)

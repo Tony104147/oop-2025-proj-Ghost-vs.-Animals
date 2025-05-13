@@ -18,14 +18,20 @@ class Map(Map_base):
             x = random.randint(0, x_range)
             y = random.randint(0, y_range)
             return (x, y)
+        
+        restriction = self.image.get_rect()
 
-        self.bat1 = bat.Bat(randpos(*window_size))
-        self.bat2 = bat.Bat(randpos(*window_size))
-        self.frog = frog.Frog(randpos(*window_size))
+        bat1 = bat.Bat(randpos(*restriction.size))
+        bat2 = bat.Bat(randpos(*restriction.size))
+        frog1 = frog.Frog(randpos(*restriction.size))
 
-        self.enemies.add(self.bat1)
-        self.enemies.add(self.bat2)
-        self.enemies.add(self.frog)
+        bat1.restriction = restriction
+        bat2.restriction = restriction
+        frog1.restriction = restriction
+
+        self.enemies.add(bat1)
+        self.enemies.add(bat2)
+        self.enemies.add(frog1)
 
         for groups in [self.enemies, self.blocks]:
             for obj in groups:

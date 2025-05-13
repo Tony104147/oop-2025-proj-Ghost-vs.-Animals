@@ -12,7 +12,7 @@ def load_images(func):
             continue
 
         image_name = file.split('.')[0].replace("_", " ")
-        image = pygame.image.load(images + "/" + file)
+        image = pygame.image.load(images + "/" + file).convert_alpha()
         IMAGES[image_name] = image
     setattr(func, "IMAGES", IMAGES)
     

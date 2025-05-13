@@ -13,13 +13,13 @@ class Map_base(Box):
     def __init__(self, *,
                  window_size = (0, 0),
                  image: pygame.Surface = None):
-        assert window_size[0] > 0 and window_size[1] > 0
-
         # Default background is black
         if image is None: image = pygame.Surface(window_size)
 
         # Call parent class (Box) constructor
         super().__init__(rect=(0, 0, *window_size), image=image)
+        w, h = window_size
+        self.image = pygame.transform.scale(self.image, self.rect.scale_by(2, 2).size)
 
         self.enemies = pygame.sprite.Group()
         self.blocks = pygame.sprite.Group()
