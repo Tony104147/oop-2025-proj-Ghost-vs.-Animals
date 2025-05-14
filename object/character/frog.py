@@ -12,8 +12,8 @@ from images import GETIMAGE
 
 class Frog(Character):
     ''''''
-    def __init__(self, pos: tuple[int]):
-        super().__init__(rect=(*pos, 100, 100),
+    def __init__(self, pos: tuple[int], name: str = None):
+        super().__init__(rect=(*pos, 80, 80),
                          image=GETIMAGE("frog"),
                          Name="frog",
                          MAX_HP=150.0,
@@ -21,7 +21,7 @@ class Frog(Character):
                          ATK=30.0,
                          DEF=20.0,
                          speed=5)
-
+        if name: self.Name = name
         self.attack_clock = Counter(240)
         self.jump_clock = Counter(360)
         self.anger_clock = Counter(600)
@@ -42,7 +42,7 @@ class Frog(Character):
             offset = pygame.math.Vector2((dx, dy))
             if offset.length() > self['speed']:
                 offset.scale_to_length(self["speed"])
-            super().move(offset, informations["GROUPS"]["BLOCKS"])
+            super().move(offset)
             self.jump_clock.reset()
         else:
             self["ATK"] = 30.0
@@ -52,12 +52,6 @@ class Frog(Character):
             informations["MAINCHARACTER"].attacked(self["ATK"])
             print(f"main charcter attacked by {self['Name']} | HP: {int(informations['MAINCHARACTER']['HP'])}")
             self.attack_clock.reset()
-        
-        # Dead
-        if self["HP"] == 0:
-            self["HP"] = self["MAX_HP"]
-            print("frog dead!!!")
-            self.kill()
 
         # Call parent class update
         super().update(informations)

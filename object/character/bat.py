@@ -12,7 +12,7 @@ from images import GETIMAGE
 
 class Bat(Character):
     ''''''
-    def __init__(self, pos: tuple[int]):
+    def __init__(self, pos: tuple[int], name: str = None):
         super().__init__(rect=(*pos, 72, 72),
                          image=GETIMAGE("bat"),
                          Name="bat",
@@ -21,7 +21,7 @@ class Bat(Character):
                          ATK=10.0,
                          DEF=10.0,
                          speed=4)
-        
+        if name: self.Name = name
         self.attack_clock = Counter(240)
         self.move_clock = Counter(30)
         self.offset = (0, 0)
@@ -43,12 +43,6 @@ class Bat(Character):
             informations["MAINCHARACTER"].attacked(self["ATK"])
             print(f"main charcter attacked by {self['Name']} | HP: {int(informations['MAINCHARACTER']['HP'])}")
             self.attack_clock.reset()
-        
-        # Dead
-        if self["HP"] == 0:
-            self["HP"] = self["MAX_HP"]
-            print("bat dead!!!")
-            self.kill()
 
         # Call parent class update
         super().update(informations)

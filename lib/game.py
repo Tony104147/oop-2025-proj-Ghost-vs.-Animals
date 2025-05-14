@@ -60,7 +60,7 @@ class Game:
                         dy = y*2 - self.main_character.rect.y
                         _, direction = pygame.math.Vector2((dx, dy)).as_polar()
                         fireball = fire_ball.Fire_ball(self.main_character.rect.center, direction, self.current_map.enemies)
-                        self.current_map.add(fireball)
+                        self.current_map['skills'].add(fireball)
 
             # Update objects
             self.current_map.update(self.get_informations())
