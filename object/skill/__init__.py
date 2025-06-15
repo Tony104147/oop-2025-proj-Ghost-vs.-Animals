@@ -8,7 +8,7 @@ class Skill(Object):
     ''''''
     def __init__(self, *,
                  rect = (0, 0, 0, 0),
-                 image: pygame.Surface = None,
+                 image: str = '',
                  Name = "skill",
                  damage = 0.0,
                  direction = 0.0,
