@@ -3,21 +3,21 @@
 import pygame
 
 from lib.counter import Counter
+from lib.event import post, new
 from object import Object
 from object.character import Character
-from images import GETIMAGE
 
 class Main_character(Character):
     ''''''
     def __init__(self):
         super().__init__(rect=(100, 100, 80, 80),
-                         image=GETIMAGE("ghost"),
+                         image="ghost",
                          Name="main character",
                          MAX_HP=100.0,
                          HP=100.0,
                          ATK=10.0,
                          DEF=10.0,
-                         speed=5)
+                         speed=10)
 
         self.MOVING_DIRECTION = {
             pygame.K_w : (0, -1),
@@ -28,6 +28,8 @@ class Main_character(Character):
 
         self.attack_clock = Counter(240)
         self.heal_clock = Counter(480)
+
+        new('ENDGAME')
     
     def update(self, informations: dict[str, Object | dict[str, pygame.sprite.Group]]):
         # Move
@@ -36,20 +38,20 @@ class Main_character(Character):
             if key_pressed[key]:
                 offset = pygame.math.Vector2(direction)
                 offset.scale_to_length(self["speed"])
-                super().move(offset, informations["GROUPS"]["BLOCKS"])
+                super().move(offset, informations["GROUPS"]["BLOCKS"], informations['RESTRICTION'])
         
         # Attack
         if self.attack_clock.ok(False):
-            enemies_collide = pygame.sprite.spritecollide(self, informations["GROUPS"]["ENEMIES"], False)
-            for enemy in enemies_collide:
+            monsters_collide = pygame.sprite.spritecollide(self, informations["GROUPS"]["MONSTERS"], False)
+            for enemy in monsters_collide:
                 enemy.attacked(self["ATK"])
-                print(f"{enemy['Name']} attacked by main character | HP: {int(self['HP'])}")
+                print(f"{enemy['Name']} attacked by you | HP: {int(self['HP'])}")
                 self.attack_clock.reset()
         
         # Dead
         if self["HP"] == 0:
-            self["HP"] = self["MAX_HP"]
-            print("main charcter dead!!!")
+            print("Ypu are dead!!!")
+            post('ENDGAME')
         
         # # Heal
         # if self.heal_clock.ok():

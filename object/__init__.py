@@ -2,11 +2,13 @@
 
 import pygame
 
+from lib.image import GETIMAGE, SETIMAGE
+
 class Object(pygame.sprite.Sprite):
     ''''''
     def __init__(self, *,
                  rect = (0, 0, 0, 0),
-                 image: pygame.Surface = None):
+                 image: str | None = None):
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
 
@@ -14,11 +16,7 @@ class Object(pygame.sprite.Sprite):
         self.rect = pygame.Rect(rect)
 
         # Texture of this object. Invisible if the argument is not setted
-        if image:
-            self.image = image
-        else:
-            self.image = pygame.Surface(self.rect.size).convert_alpha()
-            self.image.fill((0, 0, 0, 0))
+        self.image = image
 
         # unique object ID
         self.ID = generate_id()
@@ -42,7 +40,7 @@ class Object(pygame.sprite.Sprite):
             #     image = pygame.transform.scale_by(self.image, self.rect.height / self.image.get_height())
 
             # Rescale the image to fit the size of object
-            image = pygame.transform.scale(self.image, self.rect.size)
+            image = pygame.transform.scale(GETIMAGE(self.image), self.rect.size)
 
             # Draw image onto 'surface'
             surface.blit(image, self.rect.topleft)
