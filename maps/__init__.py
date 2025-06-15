@@ -7,9 +7,6 @@ from attr import dataclass, field
 
 import pygame
 
-from object import Object
-from lib.counter import Counter
-
 @dataclass(slots=True, kw_only=True)
 class Map:
     '''

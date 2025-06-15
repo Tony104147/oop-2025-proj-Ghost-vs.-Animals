@@ -30,10 +30,7 @@ class Object(pygame.sprite.Sprite):
     def __setitem__(self, name, value):
         setattr(self, name, value)
 
-    '''
-    Draw the object onto the surface.
-    :param surface: Surface to draw the object onto
-    '''
+    # Draw the object onto the surface
     def draw(self, surface: pygame.Surface):
         if self.image:
             # # Rescale the image with unchanged ratio
@@ -50,7 +47,6 @@ class Object(pygame.sprite.Sprite):
             # Draw image onto 'surface'
             surface.blit(image, self.rect.topleft)
 
-    ''''''
     def update(self, informations):
         pass
 

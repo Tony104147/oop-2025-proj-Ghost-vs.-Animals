@@ -44,7 +44,8 @@ class Game:
                         dx = x - self.main_character.rect.centerx
                         dy = y - self.main_character.rect.centery
                         _, direction = pygame.math.Vector2((dx, dy)).as_polar()
-                        fireball = Fire_ball(self.main_character.rect.center, direction, self.maps[self.current_map].groups['MONSTERS'])
+                        fireball = Fire_ball(
+                            self.main_character.rect.center, direction, self.maps[self.current_map].groups['MONSTERS'])
                         self.maps[self.current_map].groups['SKILLS'].add(fireball)
                 elif event.type == TYPES['REBORN']:
                     self.maps[self.current_map].groups['MONSTERS'].add(event.monsters)
