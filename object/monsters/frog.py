@@ -10,7 +10,11 @@ from object import Object
 from object.character import Character
 
 class Frog(Character):
-    ''''''
+    '''
+    Frog class, a monster in the game.
+    This class implements the behavior of a frog.
+    It jumps towards the main character and attacks when close enough.
+    '''
     def __init__(self, pos: tuple[int], name: str = None):
         super().__init__(rect=(*pos, 80, 80),
                          image='frog',
@@ -21,8 +25,8 @@ class Frog(Character):
                          DEF=20.0,
                          speed=10)
         if name: self.Name = name
-        self.attack_clock = Counter(240)
-        self.jump_clock = Counter(360)
+        self.attack_clock = Counter(60)
+        self.jump_clock = Counter(180)
         self.anger_clock = Counter(600)
         self.destination = (0, 0)
         
@@ -34,7 +38,8 @@ class Frog(Character):
             if self.anger_clock.ok(False):
                 self.jump_clock.reset()
                 self['speed'] = 10
-        
+
+        # If the frog is angry, its ATK will raise and move faster until a few seconds later
         if (self.rect.centerx != self.destination[0]) or (self.rect.centery != self.destination[1]):
             dx = self.destination[0] - self.rect.centerx
             dy = self.destination[1] - self.rect.centery

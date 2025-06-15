@@ -5,7 +5,9 @@ import pygame
 from lib.image import GETIMAGE, SETIMAGE
 
 class Object(pygame.sprite.Sprite):
-    ''''''
+    '''
+    Object class, parent of all objects in the game.
+    '''
     def __init__(self, *,
                  rect = (0, 0, 0, 0),
                  image: str | None = None):
@@ -28,7 +30,10 @@ class Object(pygame.sprite.Sprite):
     def __setitem__(self, name, value):
         setattr(self, name, value)
 
-    ''''''
+    '''
+    Draw the object onto the surface.
+    :param surface: Surface to draw the object onto
+    '''
     def draw(self, surface: pygame.Surface):
         if self.image:
             # # Rescale the image with unchanged ratio

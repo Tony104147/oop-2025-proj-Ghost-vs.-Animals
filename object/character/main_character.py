@@ -8,7 +8,9 @@ from object import Object
 from object.character import Character
 
 class Main_character(Character):
-    ''''''
+    '''
+    Main character class, the player character in the game.
+    '''
     def __init__(self):
         super().__init__(rect=(100, 100, 80, 80),
                          image="ghost",

@@ -5,7 +5,9 @@ import pygame
 from object import Object
 
 class Skill(Object):
-    ''''''
+    '''
+    Skill class, parent of all skills in the game.
+    '''
     def __init__(self, *,
                  rect = (0, 0, 0, 0),
                  image: str = '',

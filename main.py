@@ -7,6 +7,7 @@ pygame.init()
 WINDOW_SIZE = (800, 600)
 WINDOW = pygame.display.set_mode(WINDOW_SIZE)
 
+# Class for runnig the game
 class Game:
     def __init__(self):
         self.window: pygame.Surface = WINDOW
@@ -22,6 +23,7 @@ class Game:
 
         self.views = views.Views()
     
+    # Start the game
     def start(self):
         clock = pygame.time.Clock()
         pygame.display.set_caption(self.title)

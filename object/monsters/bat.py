@@ -10,7 +10,11 @@ from object import Object
 from object.character import Character
 
 class Bat(Character):
-    ''''''
+    '''
+    Bat class, a monster in the game.
+    This class implements the behavior of a bat.
+    It moves randomly within a certain radius and attacks the main character when close enough.
+    '''
     def __init__(self, pos: tuple[int], name: str = None):
         super().__init__(rect=(*pos, 72, 72),
                          image='bat',
@@ -21,7 +25,7 @@ class Bat(Character):
                          DEF=10.0,
                          speed=8)
         if name: self.Name = name
-        self.attack_clock = Counter(240)
+        self.attack_clock = Counter(60)
         self.move_clock = Counter(30)
         self.offset = (0, 0)
         

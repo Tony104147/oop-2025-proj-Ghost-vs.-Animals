@@ -5,7 +5,10 @@ import pygame
 from object import Object
 
 class Character(Object):
-    ''''''
+    '''
+    Character class, parent of all characters in the game.
+    This class contains all the data of a character, such as name, HP, ATK, DEF, etc.
+    '''
     def __init__(self, *,
                  rect = (0, 0, 0, 0),
                  image: str | None = None,
