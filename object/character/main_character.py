@@ -29,7 +29,7 @@ class Main_character(Character):
         }
 
         self.attack_clock = Counter(240)
-        self.heal_clock = Counter(480)
+        # self.heal_clock = Counter(480)
 
         new('ENDGAME')
     
