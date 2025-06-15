@@ -31,6 +31,9 @@ class Counter:
         if count_time: self.count_time = count_time
         self.countdown = self.count_time
     
+    def delete(self):
+        Counter.counters.remove(self)
+    
 def tick():
     for counter in Counter.counters:
         if counter.countdown and not counter.is_pause:
