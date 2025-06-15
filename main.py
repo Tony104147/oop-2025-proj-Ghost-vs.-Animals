@@ -122,6 +122,7 @@ from lib import counter, views
 
 
 def main():
+    load_images()
     game = Game()
     game.start()
 

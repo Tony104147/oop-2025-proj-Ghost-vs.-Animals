@@ -16,7 +16,6 @@ def load_images():
         image_name = file.split('.')[0].replace("_", " ")
         image = pygame.image.load(images + "/" + file).convert_alpha()
         IMAGES[image_name] = image
-load_images()
 
 # Function to get an image by name
 def GETIMAGE(name: str):
