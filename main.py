@@ -142,6 +142,8 @@ def main():
             if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
                 start_game = True
 
+        pygame.display.flip()
+
     game = Game()
     game.start()
 
