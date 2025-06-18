@@ -124,7 +124,24 @@ from lib import counter, views
 
 def main():
     load_images()
-    
+
+    start_game = False
+    blank_surface = pygame.Surface(WINDOW_SIZE)
+    blank_surface.fill((0, 0, 0))
+    start_font = pygame.font.Font(None, 50)
+    start_text = start_font.render('Press \'space\' to start', False, (255, 255, 255))
+    w, h = start_font.size('Press \'space\' to start')
+    while not start_game:
+        WINDOW.blit(blank_surface, (0, 0))
+        WINDOW.blit(start_text, ((WINDOW_SIZE[0] - w) / 2, (WINDOW_SIZE[1] + h) / 2))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+            if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
+                start_game = True
+
     game = Game()
     game.start()
 
