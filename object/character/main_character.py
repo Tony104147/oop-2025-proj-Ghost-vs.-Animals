@@ -64,5 +64,5 @@ class Main_character(Character):
         super().update(informations)
     
     def attacked(self, value):
-        self.heal_clock.reset()
+        # self.heal_clock.reset()
         return super().attacked(value)
